@@ -1,8 +1,9 @@
 from django.urls import path
 from . import views
-from django.conf.urls.static import static
-from django.conf import settings
+
 
 urlpatterns = [
     path("", views.index, name="index"),
+    path("/author/<str:name>", views.searchAuthor, name="search-author"),
+    path("/title/<str:name>", views.searchTitle, name="search-title")
 ]
