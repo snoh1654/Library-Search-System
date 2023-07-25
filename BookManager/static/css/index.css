@@ -1,0 +1,17 @@
+.navbar {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  padding: 0;
+  text-align: center;
+  margin: 0;
+}
+
+li {
+  list-style: none;
+  width: fit-content;
+}
+
+h1 {
+  color: red;
+}

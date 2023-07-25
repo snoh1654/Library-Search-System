@@ -1,0 +1,62 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static '/css/index.css' %}" />
+  </head>
+  <body>
+    <header class="header">
+      <nav class="navbar">
+        <ul>
+          <li><a href="">Search for Author</a></li>
+          <li><a href="">Edit and View Added Books</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <div class="title-search">
+      <h1 class="title">Library Management System</h1>
+      <label for="title">Search by: Book Title</label>
+      <br />
+      <input type="text" id="title" name="title" />
+    </div>
+
+    <br />
+
+    <div class="author-search">
+      <label for="author">Search by: Book Author</label>
+      <br />
+      <input type="text" id="fname" name="fname" />
+    </div>
+
+    <div class="book-display">
+      {% if books %}
+      <div class="book-container">
+        <table class="book-table">
+          <thread>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+            </tr>
+          </thread>
+          <tbody>
+            {% for book in books %}
+            <tr>
+              <td>{{ book.title }}</td>
+              <td>{{ book.authors }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+      {% else %}
+      <h5 class="message-text">No Books are recorded</h5>
+      {% endif %}
+    </div>
+
+    <footer class="footer">Created by Sean Noh</footer>
+  </body>
+</html>
