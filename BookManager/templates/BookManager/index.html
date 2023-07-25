@@ -1,77 +1,50 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
-    <link rel="stylesheet" href="{% static '/css/index.css' %}" />
-  </head>
-  <body>
-    <header class="header">
-      <nav class="navbar">
-        <ul>
-          <li><a href="{% url 'index' %}">Search for Author</a></li>
-          <li><a href="{% url 'edit' %}">Edit and View Added Books</a></li>
-        </ul>
-      </nav>
-    </header>
+{% extends "BookManager/base.html" %} {% block body%}
+<div class="title-search">
+  <form action="{% url 'search-title' %}" method="GET">
+    {% csrf_token %}
+    <label for="title">Search by: Book Title</label>
+    <input type="text" id="title" name="title" placeholder="Search Title" />
+    <button class="button" type="submit">Search</button>
+  </form>
+</div>
 
-    <h1 class="title">Library Management System</h1>
+<br />
 
-    <div class="title-search">
-      <form action="{% url 'search-title' %}" method="GET">
-        {% csrf_token %}
-        <label for="title">Search by: Book Title</label>
-        <input type="text" id="title" name="title" placeholder="Search Title" />
-        <button class="button" type="submit">Search</button>
-      </form>
-    </div>
-
+<div class="author-search">
+  <form action="{% url 'search-author' %}" method="GET">
+    {% csrf_token %}
+    <label for="author">Search by: Book Author</label>
     <br />
+    <input type="text" id="fname" name="fname" placeholder="Search Author" />
+    <button class="button" type="submit" name="button">Submit</button>
+  </form>
+</div>
 
-    <div class="author-search">
-      <form action="{% url 'search-author' %}" method="GET">
-        {% csrf_token %}
-        <label for="author">Search by: Book Author</label>
-        <br />
-        <input
-          type="text"
-          id="fname"
-          name="fname"
-          placeholder="Search Author"
-        />
-        <button class="button" type="submit" name="button">Submit</button>
-      </form>
-    </div>
+<div class="book-display">
+  {% if booksInfo %}
+  <div class="book-container">
+    <table class="book-table">
+      <thread>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+        </tr>
+      </thread>
+      <tbody>
+        {% for book, authors, genre in booksInfo %}
+        <tr>
+          <td>{{ book.title }}</td>
+          {% for author in authors %}
+          <td>{{ author }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <h5 class="message-text">No Books are recorded</h5>
+  {% endif %}
+</div>
 
-    <div class="book-display">
-      {% if booksInfo %}
-      <div class="book-container">
-        <table class="book-table">
-          <thread>
-            <tr>
-              <th>Title</th>
-              <th>Author</th>
-            </tr>
-          </thread>
-          <tbody>
-            {% for book, authors, genre in booksInfo %}
-            <tr>
-              <td>{{ book.title }}</td>
-              {% for author in authors %}
-              <td>{{ author }}</td>
-              {% endfor %}
-            </tr>
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
-      {% else %}
-      <h5 class="message-text">No Books are recorded</h5>
-      {% endif %}
-    </div>
-
-    <footer class="footer">Created by Sean Noh</footer>
-  </body>
-</html>
+{% endblock %}

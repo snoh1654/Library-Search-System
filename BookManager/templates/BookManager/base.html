@@ -1,0 +1,26 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link rel="stylesheet" href="{% static '/css/index.css' %}" />
+  </head>
+  <body>
+    <header class="header">
+      <nav class="navbar">
+        <ul>
+          <li><a href="{% url 'index' %}">Search for Author</a></li>
+          <li><a href="{% url 'edit' %}">Edit and View Added Books</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <h1 class="title">Library Management System</h1>
+
+    {% block body %} {% endblock %}
+
+    <footer class="footer">Created by Sean Noh</footer>
+  </body>
+</html>

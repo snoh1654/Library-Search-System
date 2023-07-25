@@ -117,4 +117,4 @@ def searchTitle(request):
 
 
 def editBooks(request):
-    return index(request)
+    return render(request, "BookManager/edit.html", {})
