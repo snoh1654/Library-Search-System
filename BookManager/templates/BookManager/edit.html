@@ -1,3 +1,61 @@
 {% extends "BookManager/base.html" %} {% block body %}
 <h1>edit</h1>
+
+<div class="book-display">
+  {% if booksInfo %}
+  <div class="book-container">
+    <table class="book-table">
+      <thread>
+        <tr>
+          <th>Title</th>
+          <th>Author</th>
+          <th>Pages</th>
+          <th>Genres</th>
+          <th>Publisher</th>
+          <th>Quote</th>
+        </tr>
+      </thread>
+      <tbody>
+        {% for book, authors, genres in booksInfo %}
+        <tr>
+          <td>{{ book.title }}</td>
+          {% for author in authors %}
+          <td>{{ author }}</td>
+          {% endfor %}
+          <td>{{ book.pages }}</td>
+          {% for genre in genres%}
+          <td>{{ genre }}</td>
+          {% endfor %}
+          <td>{{book.publisher}}</td>
+          <td>{{book.quote}}</td>
+          <td>
+            <div class="crud-container">
+              <ul class="crud-list">
+                <li>
+                  <a href="{% url 'add' %}" class="crud-button">Add</a>
+                </li>
+                <li>
+                  <a href="{% url 'update' book.id %}" class="crud-button"
+                    >Update</a
+                  >
+                </li>
+                <li>
+                  <form action="{% url 'delete' book.id %}" method="POST">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                  </form>
+                </li>
+              </ul>
+            </div>
+          </td>
+        </tr>
+
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <h5 class="message-text">No Books are recorded</h5>
+  {% endif %}
+</div>
 {% endblock %}

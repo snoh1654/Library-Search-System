@@ -1,10 +1,8 @@
 from django.shortcuts import render
 from .models import Book, Author, Genre
-
+from .forms import BookForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-from django.shortcuts import render
-
 # Create your views here.
 
 
@@ -44,7 +42,7 @@ def sortBookInformation(request, books, bookInformation):
 
     for book in books:
         authors.append(bookInformation[book.title]["author"])
-        genres.append(bookInformation[book.title]["author"])
+        genres.append(bookInformation[book.title]["genre"])
 
     return {
         "booksInfo": zip(books, authors, genres),
@@ -117,4 +115,62 @@ def searchTitle(request):
 
 
 def editBooks(request):
-    return render(request, "BookManager/edit.html", {})
+    returnBook = bookHelper(request, Book.objects.all())
+    context = sortBookInformation(request,
+                                  returnBook["books"], returnBook["bookInformation"])
+
+    return render(request, "BookManager/edit.html", context)
+
+
+def addBook(request):
+    if request.method == 'POST':
+        bookForm = BookForm(request.POST)
+        if bookForm.is_valid():
+            new_title = bookForm.cleaned_data['title']
+            new_pages = bookForm.cleaned_data['pages']
+            new_publisher = bookForm.cleaned_data['publisher']
+            new_quote = bookForm.cleaned_data['quote']
+
+            new_student = Book(
+                title=new_title,
+                pages=new_pages,
+                publisher=new_publisher,
+                quote=new_quote,
+            )
+            new_student.save()
+            return render(request, 'BookManager/add.html', {
+                'form': BookForm(),
+                'success': True
+            })
+        else:
+            bookForm = BookForm()
+    return render(request, 'BookManager/add.html', {
+        'form': BookForm()
+    })
+
+
+def updateBook(request, id):
+    if request.method == 'POST':
+        book = Book.objects.get(pk=id)
+        bookForm = BookForm(request.POST, instance=book)
+
+        if bookForm.is_valid():
+            bookForm.save()
+            return render(request, 'BookManager/update.html', {
+                'form': bookForm,
+                'success': True
+            })
+    else:
+        book = Book.objects.get(pk=id)
+        bookForm = BookForm(instance=book)
+    return render(request, 'BookManager/update.html', {
+        'form': bookForm
+    })
+
+
+def deleteBook(request, id):
+    print(id)
+    if request.method == "POST":
+        book = Book.objects.get(pk=id)
+        book.delete()
+    return HttpResponseRedirect(reverse('edit'))

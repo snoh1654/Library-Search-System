@@ -1,0 +1,17 @@
+{% extends 'BookManager/base.html' %} {% block body%}
+
+<h1>Update Book</h1>
+
+{% if success %}
+
+<div class="success-update-container">
+  <h3 class="success-message">The Book has been successfully updated.</h3>
+</div>
+
+{% else %}
+<form action="" method="POST">
+  {% csrf_token %} {{ form.as_p}}
+  <button type="submit" class="button">Update Book</button>
+</form>
+
+{% endif %} {% endblock %}
