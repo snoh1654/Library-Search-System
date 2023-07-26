@@ -3,32 +3,45 @@ from .models import Book, Author, Genre
 from .forms import BookForm, AuthorForm, GenreForm
 from django.http import HttpResponseRedirect
 from django.urls import reverse
-# Create your views here.
 
 
-def bookHelp(books):
+def fillBookKeys(books):
     bookInformation = {}
-
     for book in books:
         bookInformation[book.title] = {
             "author": [],
             "genre": [],
         }
+    return bookInformation
+
+
+def renderAllBooks(request, location):
+    bookDictionary = bookDictionaryInit(Book.objects.all())
+    context = sortBookInformation(
+        bookDictionary["books"], bookDictionary["bookInformation"])
+
+    return render(request, location, context)
+
+
+def bookDictionaryInit(books):
+    bookInformation = fillBookKeys(books)
 
     authors = Author.objects.all()
     genres = Genre.objects.all()
 
     for author in authors:
-        if (str(author.book) in bookInformation):
-            bookInformation[str(author.book)]["author"].append(author.name)
-
-        # add author name to book by the name of author.book
+        book = str(author.book)
+        if (book in bookInformation):
+            bookData = bookInformation[book]
+            bookAuthorList = bookData["author"]
+            bookAuthorList.append(author.name)
 
     for genre in genres:
-        if (str(genre.book) in bookInformation):
-            bookInformation[str(genre.book)]["genre"].append(genre.genre)
-
-        # add genre name to genre.book
+        book = str(genre.book)
+        if (book in bookInformation):
+            bookData = bookInformation[book]
+            bookGenreList = bookData["genre"]
+            bookGenreList.append(genre.genre)
 
     return {
         "books": books,
@@ -45,57 +58,12 @@ def sortBookInformation(books, bookInformation):
         genres.append(bookInformation[book.title]["genre"])
 
     return {
-        "booksInfo": zip(books, authors, genres),
-        "authors": authors,
-        "genres": genres
+        "booksInfo": zip(books, authors, genres)
     }
 
 
 def index(request):
-    returnBook = bookHelp(Book.objects.all())
-    context = sortBookInformation(
-        returnBook["books"], returnBook["bookInformation"])
-
-    return render(request, "BookManager/index.html", context)
-
-
-def searchAuthor(request):
-    if request.method == "GET":
-        query = request.GET.get("fname")
-
-        if (query == ""):
-            return index(request)
-
-        print(query)
-
-        bookHelperReturn = bookHelp(Book.objects.all())
-        books = bookHelperReturn["books"]
-        bookInformation = bookHelperReturn["bookInformation"]
-
-        filterBooks = []
-
-        for book in bookInformation.copy():
-            if query in bookInformation[book]["author"]:
-                filterBooks.append(book)
-            else:
-                bookInformation.pop(book)
-
-        books = Book.objects.filter(title__in=filterBooks)
-
-        print(books, "done")
-        print(bookInformation)
-
-        returnBook = {
-            "books": books,
-            "bookInformation": bookInformation
-        }
-
-        context = sortBookInformation(
-            returnBook["books"], returnBook["bookInformation"])
-
-        return render(request, "BookManager/index.html", context)
-    else:
-        return index(request)
+    return renderAllBooks(request, "BookManager/index.html")
 
 
 def searchTitle(request):
@@ -105,20 +73,51 @@ def searchTitle(request):
         if (query == ""):
             return index(request)
 
-        returnBook = bookHelp(Book.objects.filter(title=query))
+        bookDictionary = bookDictionaryInit(Book.objects.filter(title=query))
         context = sortBookInformation(
-            returnBook["books"], returnBook["bookInformation"])
+            bookDictionary["books"], bookDictionary["bookInformation"])
+
+        return render(request, "BookManager/index.html", context)
+
+    else:
+        return index(request)
+
+
+def searchAuthor(request):
+    if request.method == "GET":
+        query = request.GET.get("fname")
+
+        if (query == ""):
+            return index(request)
+
+        bookDictionary = bookDictionaryInit(Book.objects.all())
+        bookDictionary = bookDictionary["bookInformation"]
+
+        filteredBooks = filterBookDictionaryByAuthor(query, bookDictionary)
+
+        books = Book.objects.filter(title__in=filteredBooks)
+
+        context = sortBookInformation(
+            books, bookDictionary)
+
         return render(request, "BookManager/index.html", context)
     else:
         return index(request)
 
 
-def editBooks(request):
-    returnBook = bookHelp(Book.objects.all())
-    context = sortBookInformation(
-        returnBook["books"], returnBook["bookInformation"])
+def filterBookDictionaryByAuthor(query, bookInformation):
+    filteredBooks = []
 
-    return render(request, "BookManager/edit.html", context)
+    for book in bookInformation.copy():
+        if query in bookInformation[book]["author"]:
+            filteredBooks.append(book)
+        else:
+            bookInformation.pop(book)
+    return filteredBooks
+
+
+def editBooks(request):
+    return renderAllBooks(request, "BookManager/edit.html")
 
 
 def addBook(request):

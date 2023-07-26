@@ -7,8 +7,10 @@
 {% if success %}
 
 <div class="success-add-container">
-  <h3 class="success-message">The Book has been successfully added.</h3>
-  <a href="{% url 'edit' %}">Return to Editing</a>
+  <h3 class="success-message" class="success-message">
+    The Book has been successfully added.
+  </h3>
+  <a href="{% url 'edit' %}" class="return-anchor">Return to Editing</a>
 </div>
 
 {% else %}
