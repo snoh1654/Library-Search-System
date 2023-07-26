@@ -5,6 +5,99 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse
 
 
+def index(request):
+    return renderAllBooks(request, "BookManager/index.html")
+
+
+def editBooks(request):
+    return renderAllBooks(request, "BookManager/edit.html")
+
+
+def searchTitle(request):
+    if request.method == "GET":
+        query = request.GET.get("title")
+
+        if (query == ""):
+            return index(request)
+
+        bookDictionary = bookDictionaryInit(Book.objects.filter(title=query))
+        context = sortBookInformation(
+            bookDictionary["books"], bookDictionary["bookInformation"])
+
+        return render(request, "BookManager/index.html", context)
+
+    else:
+        return index(request)
+
+
+def searchAuthor(request):
+    if request.method == "GET":
+        query = request.GET.get("fname")
+
+        if (query == ""):
+            return index(request)
+
+        bookDictionary = bookDictionaryInit(Book.objects.all())
+        bookDictionary = bookDictionary["bookInformation"]
+
+        filteredBooks = filterBookDictionaryByAuthor(query, bookDictionary)
+
+        books = Book.objects.filter(title__in=filteredBooks)
+
+        context = sortBookInformation(
+            books, bookDictionary)
+
+        return render(request, "BookManager/index.html", context)
+    else:
+        return index(request)
+
+
+def addBook(request):
+    if request.method == 'POST':
+        result = performAdd(request)
+
+        if result:
+            return render(request, 'BookManager/add.html', {
+                'success': True
+            })
+
+    return render(request, 'BookManager/add.html', {
+        "bookForm": BookForm(),
+        "authorForm": AuthorForm(),
+        "genreForm": GenreForm()
+    })
+
+
+def updateBook(request, id):
+    if request.method == 'POST':
+        result = performAdd(request)
+        if result:
+            book = Book.objects.get(pk=id)
+            book.delete()
+            return render(request, 'BookManager/update.html', {
+                'success': True
+            })
+    else:
+        book = Book.objects.get(pk=id)
+        bookForm = BookForm(instance=book)
+    return render(request, 'BookManager/update.html', {
+        "bookForm": bookForm,
+        "authorForm": AuthorForm(),
+        "genreForm": GenreForm()
+    })
+
+
+def deleteBook(request, id):
+    if request.method == "POST":
+        book = Book.objects.get(pk=id)
+        book.delete()
+    return HttpResponseRedirect(reverse('edit'))
+
+##################
+# HELPER FUNCTIONS
+##################
+
+
 def fillBookKeys(books):
     bookInformation = {}
     for book in books:
@@ -62,49 +155,6 @@ def sortBookInformation(books, bookInformation):
     }
 
 
-def index(request):
-    return renderAllBooks(request, "BookManager/index.html")
-
-
-def searchTitle(request):
-    if request.method == "GET":
-        query = request.GET.get("title")
-
-        if (query == ""):
-            return index(request)
-
-        bookDictionary = bookDictionaryInit(Book.objects.filter(title=query))
-        context = sortBookInformation(
-            bookDictionary["books"], bookDictionary["bookInformation"])
-
-        return render(request, "BookManager/index.html", context)
-
-    else:
-        return index(request)
-
-
-def searchAuthor(request):
-    if request.method == "GET":
-        query = request.GET.get("fname")
-
-        if (query == ""):
-            return index(request)
-
-        bookDictionary = bookDictionaryInit(Book.objects.all())
-        bookDictionary = bookDictionary["bookInformation"]
-
-        filteredBooks = filterBookDictionaryByAuthor(query, bookDictionary)
-
-        books = Book.objects.filter(title__in=filteredBooks)
-
-        context = sortBookInformation(
-            books, bookDictionary)
-
-        return render(request, "BookManager/index.html", context)
-    else:
-        return index(request)
-
-
 def filterBookDictionaryByAuthor(query, bookInformation):
     filteredBooks = []
 
@@ -114,26 +164,6 @@ def filterBookDictionaryByAuthor(query, bookInformation):
         else:
             bookInformation.pop(book)
     return filteredBooks
-
-
-def editBooks(request):
-    return renderAllBooks(request, "BookManager/edit.html")
-
-
-def addBook(request):
-    if request.method == 'POST':
-        result = performAdd(request)
-
-        if result:
-            return render(request, 'BookManager/add.html', {
-                'success': True
-            })
-
-    return render(request, 'BookManager/add.html', {
-        "bookForm": BookForm(),
-        "authorForm": AuthorForm(),
-        "genreForm": GenreForm()
-    })
 
 
 def performAdd(request):
@@ -171,29 +201,3 @@ def performAdd(request):
         return True
     else:
         return False
-
-
-def updateBook(request, id):
-    if request.method == 'POST':
-        result = performAdd(request)
-        if result:
-            book = Book.objects.get(pk=id)
-            book.delete()
-            return render(request, 'BookManager/update.html', {
-                'success': True
-            })
-    else:
-        book = Book.objects.get(pk=id)
-        bookForm = BookForm(instance=book)
-    return render(request, 'BookManager/update.html', {
-        "bookForm": bookForm,
-        "authorForm": AuthorForm(),
-        "genreForm": GenreForm()
-    })
-
-
-def deleteBook(request, id):
-    if request.method == "POST":
-        book = Book.objects.get(pk=id)
-        book.delete()
-    return HttpResponseRedirect(reverse('edit'))
