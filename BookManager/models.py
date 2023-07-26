@@ -9,7 +9,7 @@ class Book(models.Model):
     pages = models.PositiveIntegerField()
 
     publisher = models.CharField(max_length=50)
-    quote = models.CharField(max_length=100)
+    quote = models.CharField(max_length=200)
 
     def __str__(self):
         return f"{self.title}"
