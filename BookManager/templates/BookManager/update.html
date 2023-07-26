@@ -15,7 +15,7 @@
 
 {% else %}
 <form action="" method="POST" class="data-form">
-  {% csrf_token %} {{ form.as_p}}
+  {% csrf_token %} {{ bookForm.as_p}} {{ authorForm.as_p }} {{ genreForm.as_p }}
   <button type="submit" class="button">Update Book</button>
 </form>
 
