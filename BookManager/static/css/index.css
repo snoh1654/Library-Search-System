@@ -1,10 +1,10 @@
-.navbar {
-  display: flex;
-  flex-direction: row;
-  width: 100%;
-  padding: 0;
-  text-align: center;
-  margin: 0;
+* {
+  padding: 0px;
+  margin: 0px;
+}
+
+html {
+  background-image: url("../images/abstract-surface-textures-white-concrete-stone-wall_74190-8189.avif");
 }
 
 li {
@@ -13,11 +13,64 @@ li {
 }
 
 a {
+  color: #3f51b5;
   text-decoration: none;
 }
 
 h1 {
-  color: red;
+  color: #3f51b5;
+}
+
+.title {
+  padding-left: 5vw;
+}
+
+.subtitle {
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  margin-left: 0.5vw;
+}
+
+.navbar {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100%;
+  padding-bottom: 10px;
+  text-align: center;
+  margin: 0;
+  background-color: #f2f2f2;
+}
+
+.nav-item {
+  border-radius: 5px;
+  width: 20vw;
+}
+
+.nav-item:hover {
+  background-color: #7d8eec;
+}
+
+.nav-text {
+  color: black;
+}
+
+.nav-text:hover {
+  color: white;
+}
+
+.name-text {
+  position: absolute;
+  right: 20px;
+  top: 50px;
+}
+
+.book-search {
+  margin: 5vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  gap: 5vh;
 }
 
 .button {
@@ -30,4 +83,70 @@ h1 {
   display: inline-block;
   font-size: 1rem;
   border-radius: 10px;
+}
+
+.button:hover {
+  cursor: pointer;
+  transform: scale(1.1);
+  background-color: #5970f1;
+}
+
+th {
+  border-bottom: 0.5px solid;
+}
+
+th,
+td {
+  width: 15vw;
+  text-align: center;
+}
+
+table {
+  border-radius: 5px;
+  width: 100%;
+  border: 1px solid;
+}
+
+tr:nth-child(even) {
+  background-color: #f2f2f2;
+}
+
+tr:hover {
+  background-color: #7d8eec;
+  color: white;
+}
+
+.crud-button {
+  border-radius: 5px;
+  border-width: 0.5px;
+}
+
+.crud-a {
+  color: black;
+}
+
+.crud-a:hover {
+  color: white;
+}
+
+.crud-button:hover {
+  background-color: black;
+  color: white;
+}
+
+.data-form {
+  margin: auto;
+}
+
+button:hover {
+  cursor: pointer;
+}
+
+.data-form {
+  margin-left: 1vw;
+}
+
+p {
+  margin-top: 5vh;
+  margin-bottom: 5vh;
 }

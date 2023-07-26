@@ -9,18 +9,26 @@
   </head>
   <body>
     <header class="header">
-      <nav class="navbar">
-        <ul>
-          <li><a href="{% url 'index' %}">Search for Author</a></li>
-          <li><a href="{% url 'edit' %}">Edit and View Added Books</a></li>
+      <nav>
+        <ul class="navbar">
+          <li class="nav-item">
+            <a href="{% url 'index' %}" class="nav-text">Search for Author</a>
+          </li>
+          <li class="nav-item">
+            <a href="{% url 'edit' %}" class="nav-text">
+              Edit and View Added Books
+            </a>
+          </li>
         </ul>
       </nav>
+
+      <h3 class="name-text">Created by Sean Noh</h3>
     </header>
 
-    <h1 class="title">Library Management System</h1>
+    <div class="title-container">
+      <h1 class="title">Library Management System</h1>
+    </div>
 
     {% block body %} {% endblock %}
-
-    <footer class="footer">Created by Sean Noh</footer>
   </body>
 </html>
